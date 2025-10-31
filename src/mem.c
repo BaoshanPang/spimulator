@@ -43,6 +43,7 @@
 /* Exported Variables: */
 
 reg_word R[R_LENGTH];
+reg_word R0[R_LENGTH]; // used for 'display'
 reg_word HI, LO;
 int HI_present, LO_present;
 mem_addr PC, nPC;
@@ -659,4 +660,17 @@ void print_mem(mem_addr addr) {
                  addr, addr, value, value);
   } else
     error("Address 0x%08x (%d) to print_mem is out of bounds\n", addr, addr);
+}
+
+void print_changed_regs() {
+  int cnt = 0;
+  for (int i = 0; i < R_LENGTH; i++) {
+    if (R0[i] != R[i]) {
+      printf("%s: 0x%x\t", int_reg_names[i], R[i]);
+      R0[i] = R[i];
+      cnt++;
+    }
+  }
+  if(cnt)
+    printf("\n");
 }

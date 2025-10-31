@@ -1435,8 +1435,10 @@ bool run_spim(mem_addr initial_PC, int steps_to_run, bool display) {
       /* After instruction executes: */
       PC += BYTES_PER_WORD;
 
-      if (display) print_inst(PC);
-
+      if (display) {
+        print_changed_regs(); // for previous PC
+        print_inst(PC);
+      }
 
       if (exception_occurred) {
         handle_exception();
