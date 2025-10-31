@@ -117,6 +117,7 @@ jmp_buf spim_top_level_env; /* For ^C */
 bool bare_machine;        /* => simulate bare machine */
 bool delayed_branches;    /* => simulate delayed branches */
 bool delayed_loads;       /* => simulate delayed loads */
+bool do_display;          /* => display instructions, regs and memory */
 bool accept_pseudo_insts; /* => parse pseudo instructions  */
 bool quiet;               /* => no warning messages */
 bool assemble;            /* => assemble, disassemble to file and exit */
@@ -155,6 +156,7 @@ int main(int argc, char **argv) {
   bare_machine = false;
   delayed_branches = false;
   delayed_loads = false;
+  do_display = false;
   accept_pseudo_insts = true;
   quiet = false;
   assemble = false;
@@ -188,6 +190,8 @@ int main(int argc, char **argv) {
       delayed_branches = true;
     } else if (streq(argv[i], "-delayed_loads") || streq(argv[i], "-dl")) {
       delayed_loads = true;
+    } else if (streq(argv[i], "-display") || streq(argv[i], "-disp")) {
+      do_display = true;
     } else if (streq(argv[i], "-exception") || streq(argv[i], "-e")) {
       load_exception_handler = true;
     } else if (streq(argv[i], "-noexception") || streq(argv[i], "-ne")) {
@@ -266,6 +270,7 @@ int main(int argc, char **argv) {
 	-asm			Extended machine (pseudo-ops, no delayed branches and loads) (default)\n\
 	-delayed_branches	Execute delayed branches\n\
 	-delayed_loads		Execute delayed loads\n\
+    -display        display instructions, also show register and memory content if they are changed\n\
 	-exception		Load exception handler (default)\n\
 	-noexception		Do not load exception handler\n\
 	-exception_file <file>	Specify exception handler in place of default\n\
@@ -307,7 +312,7 @@ int main(int argc, char **argv) {
           free(undefs);
         }
         run_program(find_symbol_address(DEFAULT_RUN_LOCATION),
-                    DEFAULT_RUN_STEPS, false, false, &continuable);
+                    DEFAULT_RUN_STEPS, do_display, false, &continuable);
       }
       console_to_spim();
     }
